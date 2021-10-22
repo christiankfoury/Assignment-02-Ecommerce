@@ -11,5 +11,6 @@ Login
 	Password: <input type='password' name='password' /><br>
 	<input type='submit' name='action' value='Login' />
 </form>
+<a href="/Main/register">Register Here</a>
 
 </body></html>

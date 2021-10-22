@@ -9,7 +9,7 @@ class Model{
 		$username = 'root';
 		$password = '';
 		$host = 'localhost';//where we find the MySQL DB server
-		$DBname = 'myApplication'; //the DB name for your Web application
+		$DBname = 'social_message'; //the DB name for your Web application
 
 
 		//connect the objects to the storage medium

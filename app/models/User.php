@@ -19,6 +19,14 @@ class User extends \app\core\Model{
 		return $STMT->fetch();//return the record
 	}
 
+	public function getUser_id($username){
+		$SQL = 'SELECT user_id FROM user WHERE username LIKE :username';
+		$STMT = self::$_connection->prepare($SQL);
+		$STMT->execute(['username'=>$username]);
+		$STMT->setFetchMode(\PDO::FETCH_CLASS,'app\\models\\User');
+		return $STMT->fetch();//return the record
+	}
+
 	public function insert(){
 		$this->password_hash = password_hash($this->password, PASSWORD_DEFAULT);
 		$SQL = 'INSERT INTO user(username, password_hash) VALUES (:username,:password_hash)';
