@@ -7,7 +7,7 @@ namespace app\filters;
 class Login	{
 	function execute(){
 		if(!isset($_SESSION['user_id'])){
-			header('location:/Main/login');
+			header('location:/Profile/login');
 			return true;
 		}
 		return false;

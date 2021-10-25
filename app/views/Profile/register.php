@@ -7,6 +7,6 @@ Register a new user
 	Password confirmation: <input type='password' name='password_confirm' /><br>
 	<input type='submit' name='action' value='Register' />
 </form>
-<a href="/Main/login">Login Here</a>
+<a href="/Profile/login">Login Here</a>
 
 </body></html>
