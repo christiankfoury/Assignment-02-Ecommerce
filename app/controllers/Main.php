@@ -3,21 +3,8 @@ namespace app\controllers;
 
 class Main extends \app\core\Controller{
 
-	public function index(){ //listing the records
-		// //TODO: register session variables to stay logged in
-		// if (isset($_POST['action'])) { //verify that the user clicked the submit button
-		// 	$user = new \app\models\User();
-		// 	$user = $user->get($_POST['username']);
-
-		// 	if ($user != false && password_verify($_POST['password'], $user->password_hash)) {
-		// 		$_SESSION['user_id'] = $user->user_id;
-		// 		$_SESSION['username'] = $user->username;
-		// 		header('location:/Secure/index');
-		// 	} else {
-		// 		$this->view('Main/login', 'Wrong username and password combination!');
-		// 	}
-		// } else //1 present a form to the user
-		// 	$this->view('Main/login');
+	public function index($profile_id){ //listing the records
+		$this->view('Main/index', ['profile_id' => $profile_id]);
 	}
 
 	public function register(){

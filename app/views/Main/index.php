@@ -1,24 +1,21 @@
 <html>
 <head><title>Animal index</title></head><body>
 
-<a href="/Main/insert">Create a new animal</a>
-<table>
-	<tr><th>Species</th><th>Colour</th><th>actions</th></tr>
-<?php
-foreach($data as $animal){
+<form action='' method='post'>
+	Search for a person: <input type="text" name="searchTextbox">
+	<input type="submit" value="Search" name="search">
+</form>
+<a href="/Main/editProfile">Edit Profile</a><br>
+<a href="/Main/settings">Settings (password, 2-FA)</a><br>
+<a href="/Main/inbox">View Inbox</a><br>
+<a href="/Main/outbox">View Outbox</a>
 
-	echo "<tr>
-			<td>$animal->species</td>
-			<td>$animal->colour</td>
-			<td>
-				<a href='/Main/details/$animal->animal_id'>details</a> | 
-				<a href='/Main/edit/$animal->animal_id'>edit</a> | 
-				<a href='/Main/delete/$animal->animal_id'>delete</a> |
-				<a href='/Vaccine/index/$animal->animal_id'>vaccination</a>
-			</td>
-		</tr>";
-}
-?>
-</table>
+<h1>Wall View</h1>
+<a href="/Main/newPost">Make new post</a>
+
+<h2>Images of profile id<?php echo $data['profile_id']?></h2>
+<h2>Public messages of profile id<?php echo $data['profile_id']?></h2>
+
+
 </body>
 </html>
