@@ -6,7 +6,10 @@ class Profile extends \app\core\Controller {
 
 	#[\app\filters\Login]
     public function index($profile_id){ //listing the records
-		$this->view('Profile/index', ['profile_id' => $profile_id]);
+		$picture = new \app\models\Picture();
+		$picture->profile_id = $profile_id;
+		$images = $picture->getImagesFromProfile();
+		$this->view('Profile/index', ['images' => $images]);
 	}
 
 	public function register(){

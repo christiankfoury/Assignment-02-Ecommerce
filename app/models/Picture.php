@@ -19,6 +19,14 @@ class Picture extends \app\core\Model{
 		return $STMT->fetchAll();//returns an array of all the records
 	}
 
+	public function getImagesFromProfile() {
+		$SQL = 'SELECT * FROM picture WHERE profile_id = :profile_id';
+		$STMT = self::$_connection->prepare($SQL);
+		$STMT->execute(['profile_id'=>$this->profile_id]);
+		$STMT->setFetchMode(\PDO::FETCH_CLASS, 'app\\models\\Picture');
+		return $STMT->fetchAll();//return the record
+	}
+
 	public function get($picture_id){
 		$SQL = 'SELECT * FROM picture WHERE picture_id = :picture_id';
 		$STMT = self::$_connection->prepare($SQL);
