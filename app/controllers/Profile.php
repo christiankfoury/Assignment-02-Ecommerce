@@ -4,6 +4,7 @@ namespace app\controllers;
 
 class Profile extends \app\core\Controller {
 
+	#[\app\filters\Login]
     public function index($profile_id){ //listing the records
 		$this->view('Profile/index', ['profile_id' => $profile_id]);
 	}
@@ -54,20 +55,22 @@ class Profile extends \app\core\Controller {
         if ($profile == false) {
             if(isset($_POST['action'])) {
                 if (!$_POST['first_name'] || !$_POST['last_name']) {   
-                    $this->view("/Profile/create/$username", "First name and last name must not be empty");
+                    $this->view("/Profile/create", "First name and last name must not be empty");
                 }
                 else {
+					$profile = new \app\models\Profile();
                     $profile->user_id = $user->user_id;
                     $profile->first_name = $_POST['first_name'];
                     $profile->middle_name = $_POST['middle_name'];
                     $profile->last_name = $_POST['last_name'];
                     $profile->insert();
-                    $profile->get($user->user_id);
+					$profile = new \app\models\Profile();
+                    $profile = $profile->get($user->user_id);
                     header("Location:/Profile/index/$profile->profile_id");
                 }
             }
             else {
-                $this->view("/Profile/create/$username");
+                $this->view("/Profile/create");
             }
         } else {
             header("Location:/Profile/index/$profile->profile_id");
