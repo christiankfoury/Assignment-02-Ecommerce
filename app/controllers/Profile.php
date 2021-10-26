@@ -8,8 +8,14 @@ class Profile extends \app\core\Controller {
     public function index($profile_id){ //listing the records
 		$picture = new \app\models\Picture();
 		$picture->profile_id = $profile_id;
-		$images = $picture->getImagesFromProfile();
-		$this->view('Profile/index', ['images' => $images]);
+		$pictures = $picture->getPicturesFromProfile();
+		$pictureLike = new \app\models\PictureLike();
+		$likesNumber = [];
+		foreach ($pictures as $picture) {
+			array_push($likesNumber, $pictureLike->getNumberOfLikes($picture->picture_id));
+		}
+		// print_r($likesNumber);
+		$this->view('Profile/index', ['pictures' => $pictures, 'likesNumber' => $likesNumber]);
 	}
 
 	public function register(){

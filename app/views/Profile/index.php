@@ -21,21 +21,18 @@
 <h2>Images you posted</h2>
 
 <?php
-
-
 // FOR LIKES AND READ/UNREAD STATUS (LIKE/UNLIKE), EITHER PUT IN ARRAY AND  / 2 - 1 
 // OR HAVE AN ARRAY OF 3 VALUES, 1RST THE IMAGE, 2ND NUMBER LIKES, 3RD READ/UNREAD/(LIKE/UNLIKE)
 // 2nd method better in my opinion
-foreach ($data['images'] as $image) {
+for ($i = 0; $i < count($data['pictures']); $i++) {
 	echo "
 	<figure>
-		<img src='/uploads/$image->filename' style='width:200px'>
-  		<figcaption>$image->caption</figcaption>
+		<img src=\"/uploads/{$data['pictures'][$i]->filename}\" style='width:200px'>
+  		<figcaption>{$data['pictures'][$i]->caption}</figcaption>
+		<figcaption>{$data['likesNumber'][$i]['COUNT(*)']} like(s)</figcaption>
+		<figcaption></figcaption>
 	</figure><br>";
-	
-	// /uploads/$picture->filename'
 }
-
 ?>
 <h2>Public messages you posted</h2>
 
