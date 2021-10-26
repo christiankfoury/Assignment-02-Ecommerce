@@ -15,7 +15,7 @@
 <?php echo $_SESSION['user_id']?>
 
 <h1>Wall View</h1>
-<a href="/Profile/newPost">Make new post</a>
+<a href="/Picture/newPost">Make new post</a>
 
 <h2>Images of profile id<?php echo $data['profile_id']?></h2>
 <h2>Public messages of profile id<?php echo $data['profile_id']?></h2>

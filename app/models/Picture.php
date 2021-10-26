@@ -3,7 +3,9 @@ namespace app\models;
 
 class Picture extends \app\core\Model{
 	public $picture_id;
+	public $profile_id;
 	public $filename;
+	public $caption;
 
 	public function __construct(){
 		parent::__construct();
@@ -27,9 +29,9 @@ class Picture extends \app\core\Model{
 
 	public function insert(){
 		//here we will have to add `` around field names
-		$SQL = 'INSERT INTO picture(filename) VALUES (:filename)';
+		$SQL = 'INSERT INTO picture(profile_id, filename, caption) VALUES (:profile_id, :filename, :caption)';
 		$STMT = self::$_connection->prepare($SQL);
-		$STMT->execute(['filename'=>$this->filename]);//associative array with key => value pairs
+		$STMT->execute(['profile_id'=>$this->profile_id, 'filename'=>$this->filename, 'caption'=>$this->caption]);//associative array with key => value pairs
 	}
 
 	public function update(){//update an picture record but don't hange the FK value and don't change the picture filename either....

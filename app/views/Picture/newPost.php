@@ -8,17 +8,14 @@
 			echo "<p>$data</p>";
 		}
 
-		foreach($data['pictures'] as $picture)
-			echo "<img src='/uploads/$picture->filename'>"
+		// foreach($data['pictures'] as $picture)
+		// 	echo "<img src='/uploads/$picture->filename'>"
 	?>
-
-
-
-
 
 	<h1>Upload a new picture</h1>
 	<form method="post" enctype="multipart/form-data">
-		Select an image file to upload:<input type="file" name="newPicture">
+		Select an image file to upload:<input type="file" name="newPicture"><br>
+        Caption: <input type="text" name="caption"><br>
 		<input type="submit" name="action">
 	</form>
 
