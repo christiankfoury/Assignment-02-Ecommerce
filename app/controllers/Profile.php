@@ -14,8 +14,10 @@ class Profile extends \app\core\Controller {
 		foreach ($pictures as $picture) {
 			array_push($likesNumber, $pictureLike->getNumberOfLikes($picture->picture_id));
 		}
+		$profile = new \app\models\Profile();
+		$profile = $profile->get($_SESSION['user_id']);
 		// print_r($likesNumber);
-		$this->view('Profile/index', ['pictures' => $pictures, 'likesNumber' => $likesNumber]);
+		$this->view('Profile/index', ['pictures' => $pictures, 'likesNumber' => $likesNumber, 'profile'=>$profile]);
 	}
 
 	public function register(){
@@ -85,4 +87,25 @@ class Profile extends \app\core\Controller {
             header("Location:/Profile/index/$profile->profile_id");
         }
     }
+
+	public function editProfile() {
+		$profile = new \app\models\Profile();
+		$profile = $profile->get($_SESSION['user_id']);
+		if (isset($_POST['action'])) {
+			if (!$_POST['first_name'] || !$_POST['last_name']) {
+				$this->view("/Profile/create", "First name and last name must not be empty");
+			} else {
+				$profile->user_id = $_SESSION['user_id'];
+				$profile->first_name = $_POST['first_name'];
+				$profile->middle_name = $_POST['middle_name'];
+				$profile->last_name = $_POST['last_name'];
+				$profile->update();
+				$profile = new \app\models\Profile();
+				$profile = $profile->get($_SESSION['user_id']);
+				header("Location:/Profile/index/$profile->profile_id");
+			}
+		} else {
+			$this->view("/Profile/create", ['first_name' => $profile->first_name,'middle_name' => $profile->middle_name,'last_name' => $profile->last_name]);
+		}
+	}
 }

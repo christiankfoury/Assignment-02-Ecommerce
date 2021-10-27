@@ -1,11 +1,13 @@
 <html>
 <head><title>Wall View</title></head><body>
 
+<h1><?php echo "Welcome {$data['profile']->first_name} {$data['profile']->last_name}!"?></h1>
 <form action='' method='post'>
 	Search for a person: <input type="text" name="searchTextbox">
 	<input type="submit" value="Search" name="search">
 </form>
 <a href="/Profile/logout">Logout</a><br>
+<a href="/Profile/index/<?php echo $data['profile']->profile_id; ?>">Home</a><br>
 <a href="/Profile/editProfile">Edit Profile</a><br>
 <a href="/Profile/settings">Settings (password, 2-FA)</a><br>
 <a href="/Profile/inbox">View Inbox</a><br>

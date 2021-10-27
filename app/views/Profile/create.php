@@ -5,11 +5,10 @@
 </head>
 <body>
     <form action='' method='post'>
-	First name: <input type='text' name='first_name' /><br>
-	Middle name: <input type='text' name='middle_name' /><br>
-	Last name: <input type='text' name='last_name' /><br>
+	First name: <input type='text' name='first_name' value='<?php if (isset($data['first_name'])) echo $data['first_name']; ?>'/><br>
+	Middle name: <input type='text' name='middle_name' value='<?php if (isset($data['middle_name'])) echo $data['middle_name'];?>'/><br>
+	Last name: <input type='text' name='last_name' value='<?php if (isset($data['last_name'])) echo $data['last_name'];?>'/><br>
 	<input type='submit' name='action' value='Done' />
-    <?php echo "<h2>$data</h2>" ?>
 </form>
 </body>
 </html>
