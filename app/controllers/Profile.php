@@ -108,4 +108,10 @@ class Profile extends \app\core\Controller {
 			$this->view("/Profile/create", ['first_name' => $profile->first_name,'middle_name' => $profile->middle_name,'last_name' => $profile->last_name]);
 		}
 	}
+
+	public function settings() {
+		$profile = new \app\models\Profile();
+		$profile = $profile->get($_SESSION['user_id']);
+		$this->view("/Profile/settings", $profile);
+	}
 }

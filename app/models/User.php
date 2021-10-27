@@ -34,6 +34,13 @@ class User extends \app\core\Model{
 		$STMT->execute(['username'=>$this->username,'password_hash'=>$this->password_hash]);//associative array with key => value pairs
 	}
 
+	public function update() {
+		$this->password_hash = password_hash($this->password, PASSWORD_DEFAULT);
+		$SQL = 'UPDATE `user` SET password_hash=:password_hash WHERE user_id = :user_id';
+		$STMT = self::$_connection->prepare($SQL);
+		$STMT->execute(['password_hash' => $this->password_hash, 'user_id' => $this->user_id]);//associative array with key => value pairs
+	}
+
 /*	public function update(){//update an user record
 		$SQL = 'UPDATE `user` SET `species`=:species,`colour`=:colour WHERE user_id = :user_id';
 		$STMT = self::$_connection->prepare($SQL);
