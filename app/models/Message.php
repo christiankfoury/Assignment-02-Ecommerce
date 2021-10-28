@@ -33,11 +33,10 @@ class Message extends \app\core\Model{
 
     public function insert(){
 		//here we will have to add `` around field names
-		$SQL = 'INSERT INTO message(sender, receiver, message, timestamp, read_status, private_status) 
-        VALUES (:sender, :receiver, :message, :timestamp, :read_status, :private_status)';
+		$SQL = 'INSERT INTO message(sender, receiver, message, read_status, private_status) 
+        VALUES (:sender, :receiver, :message, :read_status, :private_status)';
 		$STMT = self::$_connection->prepare($SQL);
-		$STMT->execute(['sender'=>$this->sender, 'receiver'=>$this->receiver,
-        'message'=>$this->message,'timestamp'=>'UTC_TIMESTAMP()','read_status'=>'unread','private_status'=>$this->private_status]);
+		$STMT->execute(['sender'=>$this->sender, 'receiver'=>$this->receiver,'message'=>$this->message,'read_status'=>'unread','private_status'=>$this->private_status]);
 	}
 
     public function update(){//update an picture record but don't hange the FK value and don't change the picture filename either....
