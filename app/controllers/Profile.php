@@ -6,18 +6,25 @@ class Profile extends \app\core\Controller {
 
 	#[\app\filters\Login]
     public function index($profile_id){ //listing the records
-		$picture = new \app\models\Picture();
-		$picture->profile_id = $profile_id;
-		$pictures = $picture->getPicturesFromProfile();
-		$pictureLike = new \app\models\PictureLike();
-		$likesNumber = [];
-		foreach ($pictures as $picture) {
-			array_push($likesNumber, $pictureLike->getNumberOfLikes($picture->picture_id));
+		if (isset($_POST['search'])) { // if form was submitted
+			$profile = new \app\models\Profile();
+			$string = $_POST['searchTextbox'];
+			header("Location:/Profile/search/$string");
 		}
-		$profile = new \app\models\Profile();
-		$profile = $profile->get($_SESSION['user_id']);
-		// print_r($likesNumber);
-		$this->view('Profile/index', ['pictures' => $pictures, 'likesNumber' => $likesNumber, 'profile'=>$profile]);
+		else{
+			$picture = new \app\models\Picture();
+			$picture->profile_id = $profile_id;
+			$pictures = $picture->getPicturesFromProfile();
+			$pictureLike = new \app\models\PictureLike();
+			$likesNumber = [];
+			foreach ($pictures as $picture) {
+				array_push($likesNumber, $pictureLike->getNumberOfLikes($picture->picture_id));
+			}
+			$profile = new \app\models\Profile();
+			$profile = $profile->get($_SESSION['user_id']);
+			// print_r($likesNumber);
+			$this->view('Profile/index', ['pictures' => $pictures, 'likesNumber' => $likesNumber, 'profile'=>$profile]);
+		}
 	}
 
 	public function register(){
@@ -114,4 +121,26 @@ class Profile extends \app\core\Controller {
 		$profile = $profile->get($_SESSION['user_id']);
 		$this->view("/Profile/settings", $profile);
 	}
+
+	public function search($string){
+		$profile = new \app\models\Profile();
+		$profile = $profile->search($string);
+		$this->view("/Profile/searchResults",$profile);
+	}
+
+	public function wall($profile_id){
+		$picture = new \app\models\Picture();
+		$picture->profile_id = $profile_id;
+		$pictures = $picture->getPicturesFromProfile();
+		$pictureLike = new \app\models\PictureLike();
+		$likesNumber = [];
+		foreach ($pictures as $picture) {
+			array_push($likesNumber, $pictureLike->getNumberOfLikes($picture->picture_id));
+		}
+		$profile = new \app\models\Profile();
+		$profile = $profile->get($profile_id);
+		$this->view('Profile/wall', ['pictures' => $pictures, 'likesNumber' => $likesNumber, 'profile'=>$profile]);
+	}
+	// likes
+	// send msg to this user
 }
