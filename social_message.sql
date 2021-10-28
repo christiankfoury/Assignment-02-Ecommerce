@@ -34,7 +34,7 @@ CREATE TABLE `message` (
   `sender` int(11) NOT NULL,
   `receiver` int(11) NOT NULL,
   `message` int(11) NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `timestamp` timestamp NOT NULL DEFAULT utc_timestamp(),
   `read_status` enum('unread','read','to_reread') NOT NULL,
   `private_status` enum('public','private') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
