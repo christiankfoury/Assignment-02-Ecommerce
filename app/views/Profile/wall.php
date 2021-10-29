@@ -26,6 +26,21 @@ for ($i = 0; $i < count($data['pictures']); $i++) {
 }
 ?>
 <h2>Public messages</h2>
-
+<?php 
+foreach ($data['messages'] as $message) {
+	$profile = new \app\models\Profile();
+	$profile = $profile->get($message->receiver);
+	$time = new \app\controllers\Time();
+	echo "
+	<table border=1>
+	<tr>
+		<th>Message to $profile->first_name $profile->last_name at {$time::convertDateTime($message->timestamp)}</th>
+	</tr>
+	<tr>
+		<td>$message->message</td>
+	</tr>
+	</table><br>";
+}
+?>
 </body>
 </html>

@@ -50,4 +50,12 @@ class Message extends \app\core\Model{
 		$STMT = self::$_connection->prepare($SQL);
 		$STMT->execute(['message_id'=>$message_id]);//associative array with key => value pairs
 	}
+
+	public function getPublicMessages() {
+		$SQL = 'SELECT * FROM message WHERE sender = :sender AND private_status = :private_status ORDER BY timestamp DESC';
+		$STMT = self::$_connection->prepare($SQL);
+		$STMT->execute(['sender'=>$this->sender,'private_status'=>'public']);
+		$STMT->setFetchMode(\PDO::FETCH_CLASS, 'app\\models\\Message');
+		return $STMT->fetchAll();//returns an array of all the records
+	}
 }
