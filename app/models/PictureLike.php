@@ -53,4 +53,11 @@ class PictureLike extends \app\core\Model
         $STMT = self::$_connection->prepare($SQL);
         $STMT->execute(['picture_id' => $this->picture_id]); //associative array with key => value pairs
     }
+
+    public function getUnreadLikes($picture_id){
+        $SQL = 'SELECT COUNT(*) FROM picture_like WHERE picture_id = :picture_id AND read_status = :read_status';
+        $STMT = self::$_connection->prepare($SQL);
+        $STMT->execute(['picture_id' => $picture_id,'read_status'=>'unseen']);
+        return $STMT->fetch(); //return the record
+    }
 }

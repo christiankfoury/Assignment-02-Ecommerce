@@ -16,14 +16,16 @@ class Profile extends \app\core\Controller {
 			$picture->profile_id = $profile_id;
 			$pictures = $picture->getPicturesFromProfile();
 			$pictureLike = new \app\models\PictureLike();
+			$notificationsCount = 0;
 			$likesNumber = [];
 			foreach ($pictures as $picture) {
 				array_push($likesNumber, $pictureLike->getNumberOfLikes($picture->picture_id));
+				$notificationsCount += ($pictureLike->getUnreadLikes($picture->picture_id))['COUNT(*)'];
 			}
 			$profile = new \app\models\Profile();
 			$profile = $profile->get($_SESSION['user_id']);
 			// print_r($likesNumber);
-			$this->view('Profile/index', ['pictures' => $pictures, 'likesNumber' => $likesNumber, 'profile'=>$profile]);
+			$this->view('Profile/index', ['pictures' => $pictures, 'likesNumber' => $likesNumber, 'profile'=>$profile,'notificationsCount'=>$notificationsCount]);
 		}
 	}
 
