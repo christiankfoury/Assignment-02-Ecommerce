@@ -20,7 +20,34 @@ class Message extends \app\core\Controller {
         }
     }
 
-    public function deleteMessage(){
+    public function readMessage($message_id){
+        $message = new \app\models\Message();
+        $message = $message->get($message_id);
+        if($message->read_status == "unread" || $message->read_status == "to_reread"){
+            $message->read_status = "read";
+            $message->update();
+        }
+        $this->view('Message/readMessage',$message);
+    }
 
+    public function toRereadMessage($message_id){
+        $message = new \app\models\Message();
+        $message = $message->get($message_id);
+        $message->read_status = "to_reread";
+        $message->update();
+
+        $profile = new \app\models\Profile();
+        $profile = $profile->get($message->receiver);
+        header("location:/Profile/inbox/$profile->profile_id");
+    }
+
+    public function deleteMessage($message_id){
+        $message = new \app\models\Message();
+        $message = $message->get($message_id);
+        $profile = new \app\models\Profile();
+        $profile = $profile->get($message->sender);
+
+        $message->delete();
+        header("location:/Profile/outbox/$profile->profile_id");
     }
 }

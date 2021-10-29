@@ -161,6 +161,21 @@ class Profile extends \app\core\Controller {
 		
 		$this->view('Profile/inbox', $messages);
 	}
-	// likes
-	// send msg to this user
+
+	public function outbox($profile_id){
+		$profile = new \app\models\Profile();
+		$profile = $profile->get($profile_id);
+
+		$messages = new \app\models\Message();
+		$messages->sender = $profile_id;
+		$messages = $messages->getMessagesBySender();
+
+		$profiles = [];
+		foreach ($messages as $message) {
+			array_push($profiles, $profile->get($message->receiver));
+		}
+
+		$this->view('Profile/outbox',['messages'=>$messages,'profiles'=>$profiles,'profile_id'=>$profile_id]);
+	}
+
 }

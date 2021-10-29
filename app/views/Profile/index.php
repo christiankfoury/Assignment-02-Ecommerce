@@ -11,7 +11,7 @@
 <a href="/Profile/editProfile">Edit Profile</a><br>
 <a href="/Profile/settings">Settings (password, 2-FA)</a><br>
 <a href="/Profile/inbox/<?php echo $data['profile']->profile_id; ?>">View Inbox</a><br>
-<a href="/Profile/outbox">View Outbox</a><br>
+<a href="/Profile/outbox/<?php echo $data['profile']->profile_id; ?>">View Outbox</a><br>
 <a href="/Profile/newMessage">Create new message</a><br>
 <a href="/Profile/notifications">View notifications</a><br>
 <!-- use session variables as global variable -->
@@ -32,7 +32,7 @@ for ($i = 0; $i < count($data['pictures']); $i++) {
 		<img src=\"/uploads/{$data['pictures'][$i]->filename}\" style='width:200px'>
   		<figcaption>{$data['pictures'][$i]->caption}</figcaption>
 		<figcaption>{$data['likesNumber'][$i]['COUNT(*)']} like(s)</figcaption>
-		<figcaption></figcaption>
+		<figcaption><a href=\"/Picture/editPost/{$data['pictures'][$i]->picture_id}\">edit</a> <a href=\"/Picture/deletePost/{$data['pictures'][$i]->picture_id}\">delete</a></figcaption>
 	</figure><br>";
 }
 ?>

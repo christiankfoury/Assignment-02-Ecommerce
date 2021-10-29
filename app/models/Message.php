@@ -45,10 +45,10 @@ class Message extends \app\core\Model{
 		$STMT->execute(['read_status'=>$this->read_status,'message_id'=>$this->message_id]);//associative array with key => value pairs
 	}
 
-	public function delete($message_id){//delete a message record
+	public function delete(){//delete a message record
 		$SQL = 'DELETE FROM `message` WHERE message_id = :message_id';
 		$STMT = self::$_connection->prepare($SQL);
-		$STMT->execute(['message_id'=>$message_id]);//associative array with key => value pairs
+		$STMT->execute(['message_id'=>$this->message_id]);//associative array with key => value pairs
 	}
 
 	public function getPublicMessages() {
@@ -63,6 +63,14 @@ class Message extends \app\core\Model{
 		$SQL = 'SELECT * FROM message WHERE receiver = :receiver ORDER BY timestamp DESC';
 		$STMT = self::$_connection->prepare($SQL);
 		$STMT->execute(['receiver'=>$this->receiver]);
+		$STMT->setFetchMode(\PDO::FETCH_CLASS, 'app\\models\\Message');
+		return $STMT->fetchAll();//returns an array of all the records
+	}
+
+	public function getMessagesBySender(){
+		$SQL = 'SELECT * FROM message WHERE sender = :sender ORDER BY timestamp DESC';
+		$STMT = self::$_connection->prepare($SQL);
+		$STMT->execute(['sender'=>$this->sender]);
 		$STMT->setFetchMode(\PDO::FETCH_CLASS, 'app\\models\\Message');
 		return $STMT->fetchAll();//returns an array of all the records
 	}

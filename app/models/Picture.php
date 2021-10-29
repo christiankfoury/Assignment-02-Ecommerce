@@ -43,15 +43,15 @@ class Picture extends \app\core\Model{
 	}
 
 	public function update(){//update an picture record but don't hange the FK value and don't change the picture filename either....
-		$SQL = 'UPDATE `picture` SET `filename`=:filename WHERE picture_id = :picture_id';//always use the PK in the where clause
+		$SQL = 'UPDATE `picture` SET `caption`=:caption WHERE picture_id = :picture_id';//always use the PK in the where clause
 		$STMT = self::$_connection->prepare($SQL);
-		$STMT->execute(['filename'=>$this->filename,'picture_id'=>$this->picture_id]);//associative array with key => value pairs
+		$STMT->execute(['caption'=>$this->caption,'picture_id'=>$this->picture_id]);//associative array with key => value pairs
 	}
 
-	public function delete($picture_id){//delete a picture record
+	public function delete(){//delete a picture record
 		$SQL = 'DELETE FROM `picture` WHERE picture_id = :picture_id';
 		$STMT = self::$_connection->prepare($SQL);
-		$STMT->execute(['picture_id'=>$picture_id]);//associative array with key => value pairs
+		$STMT->execute(['picture_id'=>$this->picture_id]);//associative array with key => value pairs
 	}
 
 }

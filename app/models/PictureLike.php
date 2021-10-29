@@ -16,7 +16,7 @@ class PictureLike extends \app\core\Model
 
     public function get($picture_id)
     {
-        $SQL = 'SELECT * FROM picture WHERE picture_id = :picture_id';
+        $SQL = 'SELECT * FROM picture_like WHERE picture_id = :picture_id';
         $STMT = self::$_connection->prepare($SQL);
         $STMT->execute(['picture_id' => $picture_id]);
         $STMT->setFetchMode(\PDO::FETCH_CLASS, 'app\\models\\Picture');
@@ -47,10 +47,10 @@ class PictureLike extends \app\core\Model
     //     $STMT->execute(['filename' => $this->filename, 'picture_id' => $this->picture_id]); //associative array with key => value pairs
     // }
 
-    // public function delete($picture_id)
-    // { //delete a picture record
-    //     $SQL = 'DELETE FROM `picture` WHERE picture_id = :picture_id';
-    //     $STMT = self::$_connection->prepare($SQL);
-    //     $STMT->execute(['picture_id' => $picture_id]); //associative array with key => value pairs
-    // }
+    public function delete()
+    {
+        $SQL = 'DELETE FROM `picture_like` WHERE picture_id = :picture_id';
+        $STMT = self::$_connection->prepare($SQL);
+        $STMT->execute(['picture_id' => $this->picture_id]); //associative array with key => value pairs
+    }
 }

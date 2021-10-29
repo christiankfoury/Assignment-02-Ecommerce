@@ -51,4 +51,32 @@ class Picture extends \app\core\Controller{
 			$this->view('Picture/newPost',['error'=>null,'pictures'=>$pictures]);
 		}
 	}
+
+	public function editPost($picture_id){
+		if(isset($_POST['action'])){
+			$picture = new \app\models\Picture();
+			$picture = $picture->get($picture_id);
+			$picture->caption = $_POST['caption'];
+			$picture->update();
+			header("location:/Profile/index/$picture->profile_id");
+		}
+		else{
+			$picture = new \app\models\Picture();
+			$picture = $picture->get($picture_id);
+			$this->view('Picture/editPost',$picture);
+		}
+	}
+
+	public function deletePost($picture_id){
+		$picture = new \app\models\Picture();
+		$picture = $picture->get($picture_id);
+		$profile_id = $picture->profile_id;
+
+		$pictureLike = new \app\models\PictureLike();
+		$pictureLike->picture_id = $picture_id;
+		
+		$pictureLike->delete();
+		$picture->delete();
+		header("location:/Profile/index/$profile_id");
+	}
 }

@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Message</title>
 </head>
 <body>
-    
+    <?php
+    $profile = new \app\models\Profile();
+    $profile = $profile->get($data->sender);
+
+    echo "<h1>Message from $profile->first_name $profile->last_name</h1>
+          <p>$data->message</p> <br>
+          <a href='/Profile/inbox/$data->receiver'>Return to inbox</a>";
+
+    ?>
 </body>
 </html>
