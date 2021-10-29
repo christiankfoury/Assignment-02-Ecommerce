@@ -75,4 +75,10 @@ class PictureLike extends \app\core\Model
         $STMT->setFetchMode(\PDO::FETCH_CLASS, 'app\\models\\Picture');
         return $STMT->fetchAll(); //return the record
     }
+
+    public function updateNotificationSeen($picture_id, $profile_id) {
+        $SQL = 'UPDATE picture_like SET read_status=:read_status WHERE picture_id = :picture_id AND profile_id = :profile_id'; //always use the PK in the where clause
+        $STMT = self::$_connection->prepare($SQL);
+        $STMT->execute(['read_status' => "seen", 'picture_id' => $picture_id, 'profile_id'=>$profile_id]); //associative array with key => value pairs
+    }
 }

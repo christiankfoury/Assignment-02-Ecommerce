@@ -208,6 +208,11 @@ class Profile extends \app\core\Controller {
 	}
 
 	public function viewNotification($picture_id, $profile_id) {
-		$pictureLike = new app\models\PictureLike();
+		$pictureLike = new \app\models\PictureLike();
+		$profile = new \app\models\Profile();
+		$profile = $profile->get($_SESSION["user_id"]);
+		$pictureLike->updateNotificationSeen($picture_id, $profile_id);
+
+		header("Location:/Profile/notifications/$profile->profile_id");
 	}
 }
