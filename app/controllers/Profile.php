@@ -145,6 +145,17 @@ class Profile extends \app\core\Controller {
 		$messages = $messages->getPublicMessages();
 		$this->view('Profile/wall', ['pictures' => $pictures, 'likesNumber' => $likesNumber, 'profile'=>$profile, 'messages' => $messages]);
 	}
+
+	public function inbox($profile_id){
+		$profile = new \app\models\Profile();
+		$profile = $profile->get($profile_id);
+
+		$messages = new \app\models\Message();
+		$messages->receiver = $profile_id;
+		$messages = $messages->getMessagesByReceiver();
+		
+		$this->view('Profile/inbox', $messages);
+	}
 	// likes
 	// send msg to this user
 }

@@ -58,4 +58,12 @@ class Message extends \app\core\Model{
 		$STMT->setFetchMode(\PDO::FETCH_CLASS, 'app\\models\\Message');
 		return $STMT->fetchAll();//returns an array of all the records
 	}
+
+	public function getMessagesByReceiver(){
+		$SQL = 'SELECT * FROM message WHERE receiver = :receiver ORDER BY timestamp DESC';
+		$STMT = self::$_connection->prepare($SQL);
+		$STMT->execute(['receiver'=>$this->receiver]);
+		$STMT->setFetchMode(\PDO::FETCH_CLASS, 'app\\models\\Message');
+		return $STMT->fetchAll();//returns an array of all the records
+	}
 }
