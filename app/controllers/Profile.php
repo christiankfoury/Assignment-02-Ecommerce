@@ -194,8 +194,20 @@ class Profile extends \app\core\Controller {
 
 	public function notifications($profile_id){
 		$pictureLike = new \app\models\PictureLike();
-		
-		$picture = 
+
+		$pictures = new \app\models\Picture();
+		$pictures->profile_id = $profile_id;
+
+		$pictures = $pictures->getPicturesFromProfile();
+		$unseenLikes = [];
+		foreach ($pictures as $picture) {
+			array_push($unseenLikes, $pictureLike->getUnseenLikes($picture->picture_id));
+		}
+
+		$this->view('Profile/notifications',$unseenLikes);
 	}
 
+	public function viewNotification($picture_id, $profile_id) {
+		$pictureLike = new app\models\PictureLike();
+	}
 }

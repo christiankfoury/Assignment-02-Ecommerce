@@ -67,4 +67,12 @@ class PictureLike extends \app\core\Model
         $STMT->execute(['picture_id' => $picture_id,'read_status'=>'unseen']);
         return $STMT->fetch(); //return the record
     }
+
+    public function getUnseenLikes($picture_id) {
+        $SQL = 'SELECT * FROM picture_like WHERE picture_id = :picture_id AND read_status = :read_status';
+        $STMT = self::$_connection->prepare($SQL);
+        $STMT->execute(['picture_id' => $picture_id,'read_status'=>'unseen']);
+        $STMT->setFetchMode(\PDO::FETCH_CLASS, 'app\\models\\Picture');
+        return $STMT->fetchAll(); //return the record
+    }
 }
