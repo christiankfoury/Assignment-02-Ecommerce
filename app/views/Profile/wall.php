@@ -27,17 +27,15 @@ for ($i = 0; $i < count($data['pictures']); $i++) {
 ?>
 <h2>Public messages</h2>
 <?php 
-foreach ($data['messages'] as $message) {
-	$profile = new \app\models\Profile();
-	$profile = $profile->get($message->receiver);
+for ($i = 0; $i < count($data['messages']); $i++) {
 	$time = new \app\controllers\Time();
 	echo "
 	<table border=1>
 	<tr>
-		<th>Message to $profile->first_name $profile->last_name at {$time::convertDateTime($message->timestamp)}</th>
+		<th>Message to {$data['profiles'][$i]->first_name} {$data['profiles'][$i]->last_name} at {$time::convertDateTime($data['messages'][$i]->timestamp)}</th>
 	</tr>
 	<tr>
-		<td>$message->message</td>
+		<td>{$data['messages'][$i]->message}</td>
 	</tr>
 	</table><br>";
 }

@@ -143,7 +143,12 @@ class Profile extends \app\core\Controller {
 		$messages = new \app\models\Message();
 		$messages->sender = $profile_id;
 		$messages = $messages->getPublicMessages();
-		$this->view('Profile/wall', ['pictures' => $pictures, 'likesNumber' => $likesNumber, 'profile'=>$profile, 'messages' => $messages]);
+
+		$profiles = [];
+		foreach ($messages as $message) {
+			array_push($profiles, $profile->get($message->receiver));
+		}
+		$this->view('Profile/wall', ['pictures' => $pictures, 'likesNumber' => $likesNumber, 'profile'=>$profile, 'messages' => $messages, 'profiles'=>$profiles]);
 	}
 
 	public function inbox($profile_id){
