@@ -79,4 +79,29 @@ class Picture extends \app\core\Controller{
 		$picture->delete();
 		header("location:/Profile/index/$profile_id");
 	}
+
+	public function likePost($picture_id,$profile_id){
+		$picture = new \app\models\Picture();
+		$picture = $picture->get($picture_id);
+		
+		// $profile = new \app\models\Profile();
+		// $profile = $profile->get($profile_id);
+
+		$pictureLike = new \app\models\PictureLike();
+		$pictureLike->picture_id = $picture_id;
+		$pictureLike->profile_id = $profile_id;
+		$pictureLike->insert();
+		header("Location:/Profile/wall/$picture->profile_id");
+	}
+
+	public function unlikePost($picture_id,$profile_id){
+		$pictureLike = new \app\models\PictureLike();
+		$pictureLike->picture_id = $picture_id;
+		$pictureLike->profile_id = $profile_id;
+		$pictureLike->delete();
+
+		$picture = new \app\models\Picture();
+		$picture = $picture->get($picture_id);
+		header("Location:/Profile/wall/$picture->profile_id");
+	}
 }

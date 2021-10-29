@@ -30,13 +30,20 @@ class PictureLike extends \app\core\Model
         return $STMT->fetch(); //return the record
     }
 
-    // public function insert()
-    // {
-    //     //here we will have to add `` around field names
-    //     $SQL = 'INSERT INTO picture(profile_id, filename, caption) VALUES (:profile_id, :filename, :caption)';
-    //     $STMT = self::$_connection->prepare($SQL);
-    //     $STMT->execute(['profile_id' => $this->profile_id, 'filename' => $this->filename, 'caption' => $this->caption]); //associative array with key => value pairs
-    // }
+    public function isLiked($picture_id, $profile_id) {
+        $SQL = 'SELECT * FROM picture_like WHERE picture_id = :picture_id AND profile_id = :profile_id';
+        $STMT = self::$_connection->prepare($SQL);
+        $STMT->execute(['picture_id' => $picture_id, 'profile_id'=>$profile_id]);
+        return $STMT->fetch(); //return the record
+    }
+
+    public function insert()
+    {
+        //here we will have to add `` around field names
+        $SQL = 'INSERT INTO picture_like(picture_id,profile_id,timestamp,read_status) VALUES (:picture_id,:profile_id,:timestamp,:read_status)';
+        $STMT = self::$_connection->prepare($SQL);
+        $STMT->execute(['picture_id'=>$this->picture_id,'profile_id'=>$this->profile_id,'timestamp'=>'UTC_TIMESTAMP()','read_status'=>'unseen']); //associative array with key => value pairs
+    }
 
     // TODO
 
@@ -49,9 +56,9 @@ class PictureLike extends \app\core\Model
 
     public function delete()
     {
-        $SQL = 'DELETE FROM `picture_like` WHERE picture_id = :picture_id';
+        $SQL = 'DELETE FROM `picture_like` WHERE picture_id = :picture_id AND profile_id = :profile_id';
         $STMT = self::$_connection->prepare($SQL);
-        $STMT->execute(['picture_id' => $this->picture_id]); //associative array with key => value pairs
+        $STMT->execute(['picture_id' => $this->picture_id,'profile_id'=>$this->profile_id]); //associative array with key => value pairs
     }
 
     public function getUnreadLikes($picture_id){

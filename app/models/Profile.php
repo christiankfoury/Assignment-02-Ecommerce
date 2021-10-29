@@ -27,6 +27,14 @@ class Profile extends \app\core\Model {
 		return $STMT->fetch();
 	}
 
+	public function getWithProfile($profile_id) {
+		$SQL = 'SELECT * FROM profile WHERE profile_id = :profile_id';
+		$STMT = self::$_connection->prepare($SQL);
+		$STMT->execute(['profile_id' => $profile_id]);
+		$STMT->setFetchMode(\PDO::FETCH_CLASS, 'app\\models\\Profile');
+		return $STMT->fetch();
+	}
+
 	public function update() {
 		$SQL = 'UPDATE `profile` SET first_name=:first_name, middle_name=:middle_name, last_name=:last_name WHERE user_id = :user_id';//always use the PK in the where clause
 		$STMT = self::$_connection->prepare($SQL);

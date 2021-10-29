@@ -16,12 +16,18 @@
 // OR HAVE AN ARRAY OF 3 VALUES, 1RST THE IMAGE, 2ND NUMBER LIKES, 3RD READ/UNREAD/(LIKE/UNLIKE)
 // 2nd method better in my opinion
 for ($i = 0; $i < count($data['pictures']); $i++) {
+	$a;
+	if ($data['likes'][$i] == 'unliked') {
+		$a = "<a href=\"/Picture/likePost/{$data['pictures'][$i]->picture_id}/{$data['viewer']}\">Like</a>";
+	} else {
+		$a = "<a href=\"/Picture/unLikePost/{$data['pictures'][$i]->picture_id}/{$data['viewer']}\">Unlike</a>";		
+	}
 	echo "
 	<figure>
 		<img src=\"/uploads/{$data['pictures'][$i]->filename}\" style='width:200px'>
   		<figcaption>{$data['pictures'][$i]->caption}</figcaption>
 		<figcaption>{$data['likesNumber'][$i]['COUNT(*)']} like(s)</figcaption>
-		<figcaption></figcaption>
+		<figcaption>$a</figcaption>
 	</figure><br>";
 }
 ?>

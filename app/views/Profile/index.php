@@ -12,7 +12,7 @@
 <a href="/Profile/settings">Settings (password, 2-FA)</a><br>
 <a href="/Profile/inbox/<?php echo $data['profile']->profile_id; ?>">View Inbox</a><br>
 <a href="/Profile/outbox/<?php echo $data['profile']->profile_id; ?>">View Outbox</a><br>
-<a href="/Profile/notifications">Notifications: <?php echo $data['notificationsCount'] ?></a><br>
+<a href="/Profile/notifications/<?php echo $data['profile']->profile_id; ?>">Notifications: <?php echo $data['notificationsCount'] ?></a><br>
 
 <h1>Wall View</h1>
 <a href="/Picture/newPost">Make new post</a>

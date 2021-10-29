@@ -135,12 +135,23 @@ class Profile extends \app\core\Controller {
 		$picture->profile_id = $profile_id;
 		$pictures = $picture->getPicturesFromProfile();
 		$pictureLike = new \app\models\PictureLike();
+
+		// profile id of the user that is viewing the wall
+		$profile = new \app\models\Profile();
+		$profile = $profile->getWithProfile($profile_id);
+		$profileViewer = $profile->get($_SESSION['user_id']);
+
 		$likesNumber = [];
+		$likeOrUnlikes = [];
 		foreach ($pictures as $picture) {
 			array_push($likesNumber, $pictureLike->getNumberOfLikes($picture->picture_id));
+			$likeOrUnlike = $pictureLike->isLiked($picture->picture_id, $profileViewer->profile_id);
+			if ($likeOrUnlike == false) {
+				array_push($likeOrUnlikes, 'unliked');
+			} else {
+				array_push($likeOrUnlikes, 'liked');
+			}
 		}
-		$profile = new \app\models\Profile();
-		$profile = $profile->get($profile_id);
 
 		$messages = new \app\models\Message();
 		$messages->sender = $profile_id;
@@ -150,7 +161,8 @@ class Profile extends \app\core\Controller {
 		foreach ($messages as $message) {
 			array_push($profiles, $profile->get($message->receiver));
 		}
-		$this->view('Profile/wall', ['pictures' => $pictures, 'likesNumber' => $likesNumber, 'profile'=>$profile, 'messages' => $messages, 'profiles'=>$profiles]);
+		$this->view('Profile/wall', ['pictures' => $pictures, 'likesNumber' => $likesNumber, 'profile'=>$profile, 'messages' => $messages, 'profiles'=>$profiles, 'likes'=>$likeOrUnlikes,
+			'viewer'=>$profileViewer->profile_id]);
 	}
 
 	public function inbox($profile_id){
@@ -178,6 +190,12 @@ class Profile extends \app\core\Controller {
 		}
 
 		$this->view('Profile/outbox',['messages'=>$messages,'profiles'=>$profiles,'profile_id'=>$profile_id]);
+	}
+
+	public function notifications($profile_id){
+		$pictureLike = new \app\models\PictureLike();
+		
+		$picture = 
 	}
 
 }
