@@ -45,7 +45,7 @@ class User extends \app\core\Controller{
 	public function deletetwofa() {
 		$user = new \app\models\User();
 		$user->user_id = $_SESSION['user_id'];
-		$user->two_factor_authentication = 'NULL';
+		$user->two_factor_authentication = null;
 		$user->updatetwofa();
 		header("Location:/Profile/settings");
 	}

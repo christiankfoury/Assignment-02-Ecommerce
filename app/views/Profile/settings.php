@@ -16,6 +16,7 @@
     <h3>2-Factor authentication</h3>
     <a href="/User/createtwofa">Create or update your 2-factor authentication</a><br>
     <?php
+    echo $data['two_factor_authentication'];
     if (!$data['two_factor_authentication'] == '') {
         echo "<a href=\"/User/deletetwofa\">Delete 2 factor authentication</a><br>";
     }

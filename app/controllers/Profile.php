@@ -73,6 +73,11 @@ class Profile extends \app\core\Controller {
 					header("location:/Profile/create");
 				} else {
 					$_SESSION['profile_id'] = $profile->profile_id;
+					if ($user->two_factor_authentication == '') {
+						$_SESSION['isAuthenticated'] = 'true';
+					} else {
+						$_SESSION['isAuthenticated'] = 'false';
+					}
 					header("Location:/Profile/index");
 				}
 
@@ -82,6 +87,22 @@ class Profile extends \app\core\Controller {
 
 		}else //1 present a form to the user
 			$this->view('Profile/login');
+	}
+
+	public function authenticate() {
+		$user = new \app\models\User();
+		$user = $user->get($_SESSION['username']);
+		if (isset($_POST['action'])) {
+			$currentcode = $_POST['currentCode'];
+			if (\app\core\TokenAuth6238::verify($user->two_factor_authentication, $currentcode)) {
+				$_SESSION['isAuthenticated'] = 'true';
+				header('location:/Profile/index');
+			} else {
+				$this->view('Profile/authenticate', "Incorrect!");
+			}
+		} else {
+			$this->view('Profile/authenticate');
+		}
 	}
 
 
