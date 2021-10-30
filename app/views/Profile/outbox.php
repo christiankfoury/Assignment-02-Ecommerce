@@ -22,6 +22,6 @@
         </table><br>";
     }
     ?>
-    <a href="/Profile/index/<?php echo $data['profile_id']?>">Return to home</a>
+    <a href="/Profile/index">Return to home</a>
 </body>
 </html>

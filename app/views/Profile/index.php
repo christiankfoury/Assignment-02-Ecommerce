@@ -7,12 +7,12 @@
 	<input type="submit" value="Search" name="search">
 </form>
 <a href="/Profile/logout">Logout</a><br>
-<a href="/Profile/index/<?php echo $data['profile']->profile_id; ?>">Home</a><br>
+<a href="/Profile/index">Home</a><br>
 <a href="/Profile/editProfile">Edit Profile</a><br>
 <a href="/Profile/settings">Settings (password, 2-FA)</a><br>
-<a href="/Profile/inbox/<?php echo $data['profile']->profile_id; ?>">View Inbox</a><br>
-<a href="/Profile/outbox/<?php echo $data['profile']->profile_id; ?>">View Outbox</a><br>
-<a href="/Profile/notifications/<?php echo $data['profile']->profile_id; ?>">Notifications: <?php echo $data['notificationsCount'] ?></a><br>
+<a href="/Profile/inbox">View Inbox</a><br>
+<a href="/Profile/outbox">View Outbox</a><br>
+<a href="/Profile/notifications">Notifications: <?php echo $data['notificationsCount'] ?></a><br>
 
 <h1>Wall View</h1>
 <a href="/Picture/newPost">Make new post</a>

@@ -4,7 +4,8 @@
     <title>Inbox</title>
 </head>
 <body>
-    <h1>Welcome to your inbox.</h1>
+    <h1>Welcome to your inbox!</h1>
+    <a href="/Profile/index">Home</a><br>
     <br><br>
     <?php
     foreach ($data as $messages){

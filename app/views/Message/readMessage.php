@@ -10,7 +10,7 @@
 
     echo "<h1>Message from $profile->first_name $profile->last_name</h1>
           <p>$data->message</p> <br>
-          <a href='/Profile/inbox/$data->receiver'>Return to inbox</a>";
+          <a href='/Profile/inbox'>Return to inbox</a>";
 
     ?>
 </body>

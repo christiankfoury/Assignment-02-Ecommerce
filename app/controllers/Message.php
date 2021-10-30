@@ -2,7 +2,8 @@
 namespace app\controllers;
 
 class Message extends \app\core\Controller {
-    
+
+    #[\app\filters\Login]
     public function createMessage($receiver){
         if(isset($_POST['action'])){
             $message = new \app\models\Message();
@@ -20,6 +21,7 @@ class Message extends \app\core\Controller {
         }
     }
 
+    #[\app\filters\Login]
     public function readMessage($message_id){
         $message = new \app\models\Message();
         $message = $message->get($message_id);
@@ -30,6 +32,7 @@ class Message extends \app\core\Controller {
         $this->view('Message/readMessage',$message);
     }
 
+    #[\app\filters\Login]
     public function toRereadMessage($message_id){
         $message = new \app\models\Message();
         $message = $message->get($message_id);
@@ -38,9 +41,10 @@ class Message extends \app\core\Controller {
 
         $profile = new \app\models\Profile();
         $profile = $profile->get($message->receiver);
-        header("location:/Profile/inbox/$profile->profile_id");
+        header("location:/Profile/inbox");
     }
 
+    #[\app\filters\Login]
     public function deleteMessage($message_id){
         $message = new \app\models\Message();
         $message = $message->get($message_id);
@@ -48,6 +52,6 @@ class Message extends \app\core\Controller {
         $profile = $profile->get($message->sender);
 
         $message->delete();
-        header("location:/Profile/outbox/$profile->profile_id");
+        header("location:/Profile/outbox");
     }
 }

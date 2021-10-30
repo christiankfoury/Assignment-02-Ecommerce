@@ -5,7 +5,7 @@ namespace app\controllers;
 class Profile extends \app\core\Controller {
 
 	#[\app\filters\Login]
-    public function index($profile_id){ //listing the records
+    public function index(){ //listing the records
 		if (isset($_POST['search'])) { // if form was submitted
 			$profile = new \app\models\Profile();
 			$string = $_POST['searchTextbox'];
@@ -13,7 +13,7 @@ class Profile extends \app\core\Controller {
 		}
 		else{
 			$picture = new \app\models\Picture();
-			$picture->profile_id = $profile_id;
+			$picture->profile_id = $_SESSION['profile_id'];
 			$pictures = $picture->getPicturesFromProfile();
 			$pictureLike = new \app\models\PictureLike();
 			$notificationsCount = 0;
@@ -67,6 +67,7 @@ class Profile extends \app\core\Controller {
 		header('location:/Profile/login');
 	}
 
+	#[\app\filters\Login]
     public function create($username) {
         $profile = new \app\models\Profile();
         $user = new \app\models\User();
@@ -86,17 +87,20 @@ class Profile extends \app\core\Controller {
                     $profile->insert();
 					$profile = new \app\models\Profile();
                     $profile = $profile->get($user->user_id);
-                    header("Location:/Profile/index/$profile->profile_id");
+					$_SESSION['profile_id'] = $profile->profile_id;
+                    header("Location:/Profile/index");
                 }
             }
             else {
                 $this->view("/Profile/create");
             }
         } else {
-            header("Location:/Profile/index/$profile->profile_id");
+			$_SESSION['profile_id'] = $profile->profile_id;
+            header("Location:/Profile/index");
         }
     }
 
+	#[\app\filters\Login]
 	public function editProfile() {
 		$profile = new \app\models\Profile();
 		$profile = $profile->get($_SESSION['user_id']);
@@ -110,26 +114,28 @@ class Profile extends \app\core\Controller {
 				$profile->last_name = $_POST['last_name'];
 				$profile->update();
 				$profile = new \app\models\Profile();
-				$profile = $profile->get($_SESSION['user_id']);
-				header("Location:/Profile/index/$profile->profile_id");
+				header("Location:/Profile/index");
 			}
 		} else {
 			$this->view("/Profile/create", ['first_name' => $profile->first_name,'middle_name' => $profile->middle_name,'last_name' => $profile->last_name]);
 		}
 	}
 
+	#[\app\filters\Login]
 	public function settings() {
 		$profile = new \app\models\Profile();
 		$profile = $profile->get($_SESSION['user_id']);
 		$this->view("/Profile/settings", $profile);
 	}
 
+	#[\app\filters\Login]
 	public function search($string){
 		$profile = new \app\models\Profile();
 		$profile = $profile->search($string);
 		$this->view("/Profile/searchResults",$profile);
 	}
 
+	#[\app\filters\Login]
 	public function wall($profile_id){
 		$picture = new \app\models\Picture();
 		$picture->profile_id = $profile_id;
@@ -139,13 +145,12 @@ class Profile extends \app\core\Controller {
 		// profile id of the user that is viewing the wall
 		$profile = new \app\models\Profile();
 		$profile = $profile->getWithProfile($profile_id);
-		$profileViewer = $profile->get($_SESSION['user_id']);
 
 		$likesNumber = [];
 		$likeOrUnlikes = [];
 		foreach ($pictures as $picture) {
 			array_push($likesNumber, $pictureLike->getNumberOfLikes($picture->picture_id));
-			$likeOrUnlike = $pictureLike->isLiked($picture->picture_id, $profileViewer->profile_id);
+			$likeOrUnlike = $pictureLike->isLiked($picture->picture_id, $_SESSION['profile_id']);
 			if ($likeOrUnlike == false) {
 				array_push($likeOrUnlikes, 'unliked');
 			} else {
@@ -162,26 +167,28 @@ class Profile extends \app\core\Controller {
 			array_push($profiles, $profile->get($message->receiver));
 		}
 		$this->view('Profile/wall', ['pictures' => $pictures, 'likesNumber' => $likesNumber, 'profile'=>$profile, 'messages' => $messages, 'profiles'=>$profiles, 'likes'=>$likeOrUnlikes,
-			'viewer'=>$profileViewer->profile_id]);
+			'viewer'=>$_SESSION['profile_id']]);
 	}
 
-	public function inbox($profile_id){
+	#[\app\filters\Login]
+	public function inbox(){
 		$profile = new \app\models\Profile();
-		$profile = $profile->get($profile_id);
+		$profile = $profile->get($_SESSION['profile_id']);
 
 		$messages = new \app\models\Message();
-		$messages->receiver = $profile_id;
+		$messages->receiver = $_SESSION['profile_id'];
 		$messages = $messages->getMessagesByReceiver();
 		
 		$this->view('Profile/inbox', $messages);
 	}
 
-	public function outbox($profile_id){
+	#[\app\filters\Login]
+	public function outbox(){
 		$profile = new \app\models\Profile();
-		$profile = $profile->get($profile_id);
+		$profile = $profile->get($_SESSION['profile_id']);
 
 		$messages = new \app\models\Message();
-		$messages->sender = $profile_id;
+		$messages->sender = $_SESSION['profile_id'];
 		$messages = $messages->getMessagesBySender();
 
 		$profiles = [];
@@ -189,14 +196,15 @@ class Profile extends \app\core\Controller {
 			array_push($profiles, $profile->get($message->receiver));
 		}
 
-		$this->view('Profile/outbox',['messages'=>$messages,'profiles'=>$profiles,'profile_id'=>$profile_id]);
+		$this->view('Profile/outbox',['messages'=>$messages,'profiles'=>$profiles,'profile_id'=>$_SESSION['profile_id']]);
 	}
 
-	public function notifications($profile_id){
+	#[\app\filters\Login]
+	public function notifications(){
 		$pictureLike = new \app\models\PictureLike();
 
 		$pictures = new \app\models\Picture();
-		$pictures->profile_id = $profile_id;
+		$pictures->profile_id = $_SESSION['profile_id'];
 
 		$pictures = $pictures->getPicturesFromProfile();
 		$unseenLikes = [];
@@ -207,12 +215,13 @@ class Profile extends \app\core\Controller {
 		$this->view('Profile/notifications',$unseenLikes);
 	}
 
+	#[\app\filters\Login]
 	public function viewNotification($picture_id, $profile_id) {
 		$pictureLike = new \app\models\PictureLike();
 		$profile = new \app\models\Profile();
 		$profile = $profile->get($_SESSION["user_id"]);
 		$pictureLike->updateNotificationSeen($picture_id, $profile_id);
 
-		header("Location:/Profile/notifications/$profile->profile_id");
+		header("Location:/Profile/notifications");
 	}
 }

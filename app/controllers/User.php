@@ -2,6 +2,8 @@
 namespace app\controllers;
 
 class User extends \app\core\Controller{
+
+	#[\app\filters\Login]
 	public function changePassword() {
 		$profile = new \app\models\Profile();
 		$profile = $profile->get($_SESSION['user_id']);
@@ -14,7 +16,7 @@ class User extends \app\core\Controller{
 				$user->password = $_POST['new_password'];
 				// echo $user->password_hash;
 				$user->update();
-				header("Location:/Profile/index/$profile->profile_id");
+				header("Location:/Profile/index");
 			}
 			else {
 				$this->view('User/changePassword', ['profile' => $profile, 'error' => 'The password(s) do not correspond']);

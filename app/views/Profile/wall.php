@@ -18,9 +18,9 @@
 for ($i = 0; $i < count($data['pictures']); $i++) {
 	$a;
 	if ($data['likes'][$i] == 'unliked') {
-		$a = "<a href=\"/Picture/likePost/{$data['pictures'][$i]->picture_id}/{$data['viewer']}\">Like</a>";
+		$a = "<a href=\"/Picture/likePost/{$data['pictures'][$i]->picture_id}\">Like</a>";
 	} else {
-		$a = "<a href=\"/Picture/unLikePost/{$data['pictures'][$i]->picture_id}/{$data['viewer']}\">Unlike</a>";		
+		$a = "<a href=\"/Picture/unLikePost/{$data['pictures'][$i]->picture_id}\">Unlike</a>";		
 	}
 	echo "
 	<figure>

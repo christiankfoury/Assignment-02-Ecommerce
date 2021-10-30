@@ -3,6 +3,8 @@ namespace app\controllers;
 
 class Picture extends \app\core\Controller{
 	private $folder='uploads/';
+
+	#[\app\filters\Login]
 	public function newPost(){
 		//implement file uploads
 
@@ -34,12 +36,10 @@ class Picture extends \app\core\Controller{
 				if(move_uploaded_file($_FILES['newPicture']['tmp_name'], $filepath)){
 					$picture = new \app\models\Picture();
 					$picture->filename = $filename;
-					$profile = new \app\models\Profile();
-					$profile = $profile->get($_SESSION['user_id']);
-					$picture->profile_id = $profile->profile_id;
+					$picture->profile_id = $_SESSION['profile_id'];
 					$picture->caption = $_POST['caption'];
 					$picture->insert();
-					header("location:/Profile/index/$profile->profile_id");
+					header("location:/Profile/index");
 				}
 				else
 					echo "There was an error";
@@ -52,13 +52,14 @@ class Picture extends \app\core\Controller{
 		}
 	}
 
+	#[\app\filters\Login]
 	public function editPost($picture_id){
 		if(isset($_POST['action'])){
 			$picture = new \app\models\Picture();
 			$picture = $picture->get($picture_id);
 			$picture->caption = $_POST['caption'];
 			$picture->update();
-			header("location:/Profile/index/$picture->profile_id");
+			header("location:/Profile/index");
 		}
 		else{
 			$picture = new \app\models\Picture();
@@ -67,20 +68,21 @@ class Picture extends \app\core\Controller{
 		}
 	}
 
+	#[\app\filters\Login]
 	public function deletePost($picture_id){
 		$picture = new \app\models\Picture();
 		$picture = $picture->get($picture_id);
-		$profile_id = $picture->profile_id;
 
 		$pictureLike = new \app\models\PictureLike();
 		$pictureLike->picture_id = $picture_id;
 		
 		$pictureLike->delete();
 		$picture->delete();
-		header("location:/Profile/index/$profile_id");
+		header("location:/Profile/index");
 	}
 
-	public function likePost($picture_id,$profile_id){
+	#[\app\filters\Login]
+	public function likePost($picture_id){
 		$picture = new \app\models\Picture();
 		$picture = $picture->get($picture_id);
 		
@@ -89,19 +91,20 @@ class Picture extends \app\core\Controller{
 
 		$pictureLike = new \app\models\PictureLike();
 		$pictureLike->picture_id = $picture_id;
-		$pictureLike->profile_id = $profile_id;
+		$pictureLike->profile_id = $_SESSION['profile_id'];
 		$pictureLike->insert();
-		header("Location:/Profile/wall/$picture->profile_id");
+		header("Location:/Profile/wall");
 	}
 
-	public function unlikePost($picture_id,$profile_id){
+	#[\app\filters\Login]
+	public function unlikePost($picture_id){
 		$pictureLike = new \app\models\PictureLike();
 		$pictureLike->picture_id = $picture_id;
-		$pictureLike->profile_id = $profile_id;
+		$pictureLike->profile_id = $_SESSION['profile_id'];
 		$pictureLike->delete();
 
 		$picture = new \app\models\Picture();
 		$picture = $picture->get($picture_id);
-		header("Location:/Profile/wall/$picture->profile_id");
+		header("Location:/Profile/wall");
 	}
 }
