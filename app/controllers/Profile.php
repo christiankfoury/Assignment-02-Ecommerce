@@ -31,12 +31,27 @@ class Profile extends \app\core\Controller {
 
 	public function register(){
 		if(isset($_POST['action']) && $_POST['password'] == $_POST['password_confirm']){//verify that the user clicked the submit button
+			if (trim($_POST['username']) == '') {
+				$this->view('Profile/register', "The username cannot be empty");
+				return;
+			}
 			$user = new \app\models\User();
+			if ($user->get($_POST['username'])) {
+				$this->view('Profile/register', "This username already exists");
+				return;
+			}
 			$user->username = $_POST['username'];
 			$user->password = $_POST['password'];
-			$user->insert();//password hashing done here
+			$user->insert(); //password hashing done here
 			//redirect the user back to the index
-			header('location:/Profile/login');
+
+			$user = new \app\models\User();
+			$user = $user->get($_POST['username']);
+			$_SESSION['user_id'] = $user->user_id;
+			$_SESSION['username'] = $user->username;
+			// header('location:/Profile/login');
+			header("location:/Profile/create/$user->username");
+
 
 		}else //1 present a form to the user
 			$this->view('Profile/register');
@@ -71,7 +86,7 @@ class Profile extends \app\core\Controller {
     public function create($username) {
         $profile = new \app\models\Profile();
         $user = new \app\models\User();
-        $user = $user->getUser_id($username);
+        $user = $user->get($username);
         $profile = $profile->get($user->user_id);
         if ($profile == false) {
             if(isset($_POST['action'])) {
