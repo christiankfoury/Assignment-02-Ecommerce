@@ -78,6 +78,7 @@ class Picture extends \app\core\Controller{
 		
 		$pictureLike->delete();
 		$picture->delete();
+		// add unlink method https://stackoverflow.com/questions/35422740/how-to-delete-a-file-after-using-move-uploaded-file
 		header("location:/Profile/index");
 	}
 

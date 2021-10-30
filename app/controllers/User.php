@@ -26,4 +26,33 @@ class User extends \app\core\Controller{
 			$this->view('User/changePassword', ['profile' => $profile]);
 		}
 	}
+
+	public function createtwofa() {
+		$secretkey = \app\core\TokenAuth6238::generateRandomClue();
+		$user = new \app\models\User();
+		$user->user_id = $_SESSION['user_id'];
+		$user->two_factor_authentication = $secretkey;
+		$user->updatetwofa();
+		$url = \App\core\TokenAuth6238::getLocalCodeUrl(
+			$_SESSION['username'],
+			'Awesome.com',
+			$secretkey,
+			'Awesome App'
+		);
+		$this->view('User/twofasetup', $url);
+	}
+
+	public function deletetwofa() {
+		$user = new \app\models\User();
+		$user->user_id = $_SESSION['user_id'];
+		$user->two_factor_authentication = 'NULL';
+		$user->updatetwofa();
+		header("Location:/Profile/settings");
+	}
+
+	public function makeQRCode()
+	{
+		$data = $_GET['data'];
+		\QRcode::png($data);
+	}
 }

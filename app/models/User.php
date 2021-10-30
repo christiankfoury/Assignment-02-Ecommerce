@@ -6,6 +6,7 @@ class User extends \app\core\Model{
 	public $username;
 	public $password_hash;
 	public $password;
+	public $two_factor_authentication;
 
 	public function __construct(){
 		parent::__construct();
@@ -53,4 +54,9 @@ class User extends \app\core\Model{
 		$STMT->execute(['user_id'=>$user_id]);//associative array with key => value pairs
 	}*/
 
+	public function updatetwofa() {
+		$SQL = 'UPDATE `user` SET `two_factor_authentication`=:two_factor_authentication WHERE user_id = :user_id';
+		$STMT = self::$_connection->prepare($SQL);
+		$STMT->execute(['two_factor_authentication'=>$this->two_factor_authentication, 'user_id' => $this->user_id]);//associative array with key => value pairs
+	}
 }

@@ -31,8 +31,8 @@ class Profile extends \app\core\Controller {
 
 	public function register(){
 		if(isset($_POST['action']) && $_POST['password'] == $_POST['password_confirm']){//verify that the user clicked the submit button
-			if (trim($_POST['username']) == '') {
-				$this->view('Profile/register', "The username cannot be empty");
+			if (trim($_POST['username']) == '' || trim($_POST['password']) == '') {
+				$this->view('Profile/register', "The username or the password cannot be empty");
 				return;
 			}
 			$user = new \app\models\User();
@@ -50,7 +50,7 @@ class Profile extends \app\core\Controller {
 			$_SESSION['user_id'] = $user->user_id;
 			$_SESSION['username'] = $user->username;
 			// header('location:/Profile/login');
-			header("location:/Profile/create/$user->username");
+			header("location:/Profile/create");
 
 
 		}else //1 present a form to the user
@@ -66,7 +66,16 @@ class Profile extends \app\core\Controller {
 			if($user!=false && password_verify($_POST['password'], $user->password_hash)){
 				$_SESSION['user_id'] = $user->user_id;
 				$_SESSION['username'] = $user->username;
-				header("location:/Profile/create/$user->username");
+
+				$profile = new \app\models\Profile();
+				$profile = $profile->get($_SESSION['user_id']);
+				if ($profile == false) {
+					header("location:/Profile/create");
+				} else {
+					$_SESSION['profile_id'] = $profile->profile_id;
+					header("Location:/Profile/index");
+				}
+
 			}else{
 				$this->view('Profile/login','Wrong username and password combination!');
 			}
@@ -83,36 +92,27 @@ class Profile extends \app\core\Controller {
 	}
 
 	#[\app\filters\Login]
-    public function create($username) {
-        $profile = new \app\models\Profile();
-        $user = new \app\models\User();
-        $user = $user->get($username);
-        $profile = $profile->get($user->user_id);
-        if ($profile == false) {
-            if(isset($_POST['action'])) {
-                if (!$_POST['first_name'] || !$_POST['last_name']) {   
-                    $this->view("/Profile/create", "First name and last name must not be empty");
-                }
-                else {
-					$profile = new \app\models\Profile();
-                    $profile->user_id = $user->user_id;
-                    $profile->first_name = $_POST['first_name'];
-                    $profile->middle_name = $_POST['middle_name'];
-                    $profile->last_name = $_POST['last_name'];
-                    $profile->insert();
-					$profile = new \app\models\Profile();
-                    $profile = $profile->get($user->user_id);
-					$_SESSION['profile_id'] = $profile->profile_id;
-                    header("Location:/Profile/index");
-                }
-            }
-            else {
-                $this->view("/Profile/create");
-            }
-        } else {
-			$_SESSION['profile_id'] = $profile->profile_id;
-            header("Location:/Profile/index");
-        }
+    public function create() {	
+		if(isset($_POST['action'])) {
+			if (!$_POST['first_name'] || !$_POST['last_name']) {   
+				$this->view("/Profile/create", "First name and last name must not be empty");
+			}
+			else {
+				$profile = new \app\models\Profile();
+				$profile->user_id = $_SESSION['user_id'];
+				$profile->first_name = $_POST['first_name'];
+				$profile->middle_name = $_POST['middle_name'];
+				$profile->last_name = $_POST['last_name'];
+				$profile->insert();
+				$profile = new \app\models\Profile();
+				$profile = $profile->get($_SESSION['user_id']);
+				$_SESSION['profile_id'] = $profile->profile_id;
+				header("Location:/Profile/index");
+			}
+		}
+		else {
+			$this->view("/Profile/create");
+		}
     }
 
 	#[\app\filters\Login]
@@ -140,7 +140,9 @@ class Profile extends \app\core\Controller {
 	public function settings() {
 		$profile = new \app\models\Profile();
 		$profile = $profile->get($_SESSION['user_id']);
-		$this->view("/Profile/settings", $profile);
+		$user = new \app\models\User();
+		$user = $user->get($_SESSION['username']);
+		$this->view("/Profile/settings", ['profile'=>$profile, 'two_factor_authentication'=>$user->two_factor_authentication]);
 	}
 
 	#[\app\filters\Login]
@@ -238,5 +240,53 @@ class Profile extends \app\core\Controller {
 		$pictureLike->updateNotificationSeen($picture_id, $profile_id);
 
 		header("Location:/Profile/notifications");
+	}
+
+
+	public function makeQRCode()
+	{
+		$data = $_GET['data'];
+		\QRcode::png($data);
+	}
+
+	// #[\app\filters\Login]
+	// public function setup2fa(){
+	// 	$secretkey = \App\core\TokenAuth6238::generateRandomClue();
+	// 	$_SESSION['secretkey'] = $secretkey;
+	// 	$url = \app\core\TokenAuth6238::getLocalCodeUrl(
+	// 	$_SESSION['username'],
+	// 	'Awesome.com',
+	// 	$secretkey,
+	// 	'Awesome App');
+	// 	$this->view('Main/twofasetup', $url);
+	// }
+
+	#[\app\filters\Login]
+	public function setuptwofa()
+	{
+		if (isset($_POST['action'])) {
+			$currentcode = $_POST['currentCode'];
+			if (\app\core\TokenAuth6238::verify($_SESSION['secretkey'], $currentcode)) {
+				//the user has verified their proper 2-factor authentication  setup
+				$user = new \App\models\User();
+				$user->user_id = $_SESSION['user_id'];
+				$user->secret_key = $_SESSION['secretkey'];
+				// $user->update2fa();
+				header('location:/index');
+			} else {
+				header('location:/Profile/setuptwofa/error=token not verified!'); //reload
+			}
+		} else {
+			$secretkey = \app\core\TokenAuth6238::generateRandomClue();
+			$_SESSION['secretkey'] = $secretkey;
+			echo $secretkey;
+			$url = \App\core\TokenAuth6238::getLocalCodeUrl(
+				$_SESSION['username'],
+				'Awesome.com',
+				$secretkey,
+				'Awesome App'
+			);
+			$this->view('Profile/twofasetup', $url);
+		}
 	}
 }
