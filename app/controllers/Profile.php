@@ -24,20 +24,35 @@ class Profile extends \app\core\Controller {
 			}
 			$profile = new \app\models\Profile();
 			$profile = $profile->get($_SESSION['user_id']);
-			// print_r($likesNumber);
-			$this->view('Profile/index', ['pictures' => $pictures, 'likesNumber' => $likesNumber, 'profile'=>$profile,'notificationsCount'=>$notificationsCount]);
+
+			$messages = new \app\models\Message();
+			$messages->sender = $_SESSION['profile_id'];
+			$messages = $messages->getPublicMessages();
+
+			$profiles = [];
+			$profileObject = new \app\models\Profile();
+			foreach ($messages as $message) {
+				array_push($profiles, $profileObject->getWithProfile($message->receiver));
+			}
+
+			$this->view('Profile/index', ['pictures' => $pictures, 'likesNumber' => $likesNumber, 'profile'=>$profile,'notificationsCount'=>$notificationsCount,
+				'messages' => $messages, 'profiles' => $profiles]);
 		}
 	}
 
 	public function register(){
-		if(isset($_POST['action']) && $_POST['password'] == $_POST['password_confirm']){//verify that the user clicked the submit button
+		if(isset($_POST['action'])){//verify that the user clicked the submit button
 			if (trim($_POST['username']) == '' || trim($_POST['password']) == '') {
-				$this->view('Profile/register', "The username or the password cannot be empty");
+				$this->view('Profile/register', "The username and the password cannot be empty");
 				return;
 			}
 			$user = new \app\models\User();
 			if ($user->get($_POST['username'])) {
 				$this->view('Profile/register', "This username already exists");
+				return;
+			}
+			if ($_POST['password'] != $_POST['password_confirm']) {
+				$this->view('Profile/register', "The passwords do not match");
 				return;
 			}
 			$user->username = $_POST['username'];
@@ -115,8 +130,8 @@ class Profile extends \app\core\Controller {
 	#[\app\filters\Login]
     public function create() {	
 		if(isset($_POST['action'])) {
-			if (!$_POST['first_name'] || !$_POST['last_name']) {   
-				$this->view("/Profile/create", "First name and last name must not be empty");
+			if (trim($_POST['first_name']) == '' || trim($_POST['last_name']) == '') {   
+				$this->view("/Profile/create", ["error"=>"First name and last name must not be empty"]);
 			}
 			else {
 				$profile = new \app\models\Profile();
@@ -142,7 +157,8 @@ class Profile extends \app\core\Controller {
 		$profile = $profile->get($_SESSION['user_id']);
 		if (isset($_POST['action'])) {
 			if (!$_POST['first_name'] || !$_POST['last_name']) {
-				$this->view("/Profile/create", "First name and last name must not be empty");
+				$this->view("/Profile/edit", ['first_name' => $profile->first_name, 'middle_name' => $profile->middle_name, 'last_name' => $profile->last_name,
+					"error"=>"First name and last name must not be empty"]);
 			} else {
 				$profile->user_id = $_SESSION['user_id'];
 				$profile->first_name = $_POST['first_name'];
@@ -153,7 +169,7 @@ class Profile extends \app\core\Controller {
 				header("Location:/Profile/index");
 			}
 		} else {
-			$this->view("/Profile/create", ['first_name' => $profile->first_name,'middle_name' => $profile->middle_name,'last_name' => $profile->last_name]);
+			$this->view("/Profile/edit", ['first_name' => $profile->first_name,'middle_name' => $profile->middle_name,'last_name' => $profile->last_name]);
 		}
 	}
 
@@ -201,8 +217,9 @@ class Profile extends \app\core\Controller {
 		$messages = $messages->getPublicMessages();
 
 		$profiles = [];
+		$profileObject = new \app\models\Profile();
 		foreach ($messages as $message) {
-			array_push($profiles, $profile->get($message->receiver));
+			array_push($profiles, $profileObject->getWithProfile($message->receiver));
 		}
 		$this->view('Profile/wall', ['pictures' => $pictures, 'likesNumber' => $likesNumber, 'profile'=>$profile, 'messages' => $messages, 'profiles'=>$profiles, 'likes'=>$likeOrUnlikes,
 			'viewer'=>$_SESSION['profile_id']]);
@@ -230,8 +247,9 @@ class Profile extends \app\core\Controller {
 		$messages = $messages->getMessagesBySender();
 
 		$profiles = [];
+		$profileObject = new \app\models\Profile();
 		foreach ($messages as $message) {
-			array_push($profiles, $profile->get($message->receiver));
+			array_push($profiles, $profileObject->getWithProfile($message->receiver));
 		}
 
 		$this->view('Profile/outbox',['messages'=>$messages,'profiles'=>$profiles,'profile_id'=>$_SESSION['profile_id']]);
@@ -264,50 +282,50 @@ class Profile extends \app\core\Controller {
 	}
 
 
-	public function makeQRCode()
-	{
-		$data = $_GET['data'];
-		\QRcode::png($data);
-	}
-
-	// #[\app\filters\Login]
-	// public function setup2fa(){
-	// 	$secretkey = \App\core\TokenAuth6238::generateRandomClue();
-	// 	$_SESSION['secretkey'] = $secretkey;
-	// 	$url = \app\core\TokenAuth6238::getLocalCodeUrl(
-	// 	$_SESSION['username'],
-	// 	'Awesome.com',
-	// 	$secretkey,
-	// 	'Awesome App');
-	// 	$this->view('Main/twofasetup', $url);
+	// public function makeQRCode()
+	// {
+	// 	$data = $_GET['data'];
+	// 	\QRcode::png($data);
 	// }
 
-	#[\app\filters\Login]
-	public function setuptwofa()
-	{
-		if (isset($_POST['action'])) {
-			$currentcode = $_POST['currentCode'];
-			if (\app\core\TokenAuth6238::verify($_SESSION['secretkey'], $currentcode)) {
-				//the user has verified their proper 2-factor authentication  setup
-				$user = new \App\models\User();
-				$user->user_id = $_SESSION['user_id'];
-				$user->secret_key = $_SESSION['secretkey'];
-				// $user->update2fa();
-				header('location:/index');
-			} else {
-				header('location:/Profile/setuptwofa/error=token not verified!'); //reload
-			}
-		} else {
-			$secretkey = \app\core\TokenAuth6238::generateRandomClue();
-			$_SESSION['secretkey'] = $secretkey;
-			echo $secretkey;
-			$url = \App\core\TokenAuth6238::getLocalCodeUrl(
-				$_SESSION['username'],
-				'Awesome.com',
-				$secretkey,
-				'Awesome App'
-			);
-			$this->view('Profile/twofasetup', $url);
-		}
-	}
+	// // #[\app\filters\Login]
+	// // public function setup2fa(){
+	// // 	$secretkey = \App\core\TokenAuth6238::generateRandomClue();
+	// // 	$_SESSION['secretkey'] = $secretkey;
+	// // 	$url = \app\core\TokenAuth6238::getLocalCodeUrl(
+	// // 	$_SESSION['username'],
+	// // 	'Awesome.com',
+	// // 	$secretkey,
+	// // 	'Awesome App');
+	// // 	$this->view('Main/twofasetup', $url);
+	// // }
+
+	// #[\app\filters\Login]
+	// public function setuptwofa()
+	// {
+	// 	if (isset($_POST['action'])) {
+	// 		$currentcode = $_POST['currentCode'];
+	// 		if (\app\core\TokenAuth6238::verify($_SESSION['secretkey'], $currentcode)) {
+	// 			//the user has verified their proper 2-factor authentication  setup
+	// 			$user = new \App\models\User();
+	// 			$user->user_id = $_SESSION['user_id'];
+	// 			$user->secret_key = $_SESSION['secretkey'];
+	// 			// $user->update2fa();
+	// 			header('location:/index');
+	// 		} else {
+	// 			header('location:/Profile/setuptwofa/error=token not verified!'); //reload
+	// 		}
+	// 	} else {
+	// 		$secretkey = \app\core\TokenAuth6238::generateRandomClue();
+	// 		$_SESSION['secretkey'] = $secretkey;
+	// 		echo $secretkey;
+	// 		$url = \App\core\TokenAuth6238::getLocalCodeUrl(
+	// 			$_SESSION['username'],
+	// 			'Awesome.com',
+	// 			$secretkey,
+	// 			'Awesome App'
+	// 		);
+	// 		$this->view('Profile/twofasetup', $url);
+	// 	}
+	// }
 }

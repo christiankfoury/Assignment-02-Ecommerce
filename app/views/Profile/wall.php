@@ -5,6 +5,7 @@
 </head>
 <body>
 <h1><?php echo "{$data['profile']->first_name} {$data['profile']->last_name}'s wall"?></h1>
+<a href="/Profile/index">Return to home</a>
 
 <h1>Wall View</h1>
 <a href="/Message/createMessage/<?php echo $data['profile']->profile_id;?>">Message user</a>

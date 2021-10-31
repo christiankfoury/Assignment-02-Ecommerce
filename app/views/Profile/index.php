@@ -34,7 +34,20 @@ for ($i = 0; $i < count($data['pictures']); $i++) {
 }
 ?>
 <h2>Public messages you posted</h2>
-
+<?php 
+for ($i = 0; $i < count($data['messages']); $i++) {
+	$time = new \app\controllers\Time();
+	echo "
+	<table border=1>
+	<tr>
+		<th>Message to {$data['profiles'][$i]->first_name} {$data['profiles'][$i]->last_name} at {$time::convertDateTime($data['messages'][$i]->timestamp)}</th>
+	</tr>
+	<tr>
+		<td>{$data['messages'][$i]->message}</td>
+	</tr>
+	</table><br>";
+}
+?>
 
 </body>
 </html>

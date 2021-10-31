@@ -20,7 +20,7 @@ class Picture extends \app\core\Model{
 	}
 
 	public function getPicturesFromProfile() {
-		$SQL = 'SELECT * FROM picture WHERE profile_id = :profile_id';
+		$SQL = 'SELECT * FROM picture WHERE profile_id = :profile_id ORDER BY picture_id DESC';
 		$STMT = self::$_connection->prepare($SQL);
 		$STMT->execute(['profile_id'=>$this->profile_id]);
 		$STMT->setFetchMode(\PDO::FETCH_CLASS, 'app\\models\\Picture');
@@ -48,7 +48,12 @@ class Picture extends \app\core\Model{
 		$STMT->execute(['caption'=>$this->caption,'picture_id'=>$this->picture_id]);//associative array with key => value pairs
 	}
 
-	public function delete(){//delete a picture record
+	public function delete(){ //delete a picture record
+		$SQL = 'DELETE FROM `picture_like` WHERE picture_id = :picture_id';
+		$STMT = self::$_connection->prepare($SQL);
+		$STMT->execute(['picture_id' => $this->picture_id]);//associative array with key => value pairs
+		unlink('uploads/' . $this->filename);
+
 		$SQL = 'DELETE FROM `picture` WHERE picture_id = :picture_id';
 		$STMT = self::$_connection->prepare($SQL);
 		$STMT->execute(['picture_id'=>$this->picture_id]);//associative array with key => value pairs

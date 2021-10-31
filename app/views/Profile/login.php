@@ -5,7 +5,8 @@
 		echo $data;
 	}
 ?>
-Login
+<h1>Social Message</h1>
+<h3>Login</h3>
 <form action='' method='post'>
 	Username: <input type='text' name='username' /><br>
 	Password: <input type='password' name='password' /><br>

@@ -94,7 +94,7 @@ class Picture extends \app\core\Controller{
 		$pictureLike->picture_id = $picture_id;
 		$pictureLike->profile_id = $_SESSION['profile_id'];
 		$pictureLike->insert();
-		header("Location:/Profile/wall");
+		header("Location:/Profile/wall/$pictureLike->profile_id");
 	}
 
 	#[\app\filters\Login]
@@ -106,6 +106,6 @@ class Picture extends \app\core\Controller{
 
 		$picture = new \app\models\Picture();
 		$picture = $picture->get($picture_id);
-		header("Location:/Profile/wall");
+		header("Location:/Profile/wall/$pictureLike->profile_id");
 	}
 }
