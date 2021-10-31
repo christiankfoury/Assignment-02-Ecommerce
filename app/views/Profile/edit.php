@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Profile Creation</title>
+    <title>Profile edit</title>
 </head>
 <body>
 	<h1>Edit Profile</h1>

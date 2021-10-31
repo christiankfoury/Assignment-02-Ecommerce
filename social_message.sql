@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 21, 2021 at 12:33 AM
+-- Generation Time: Oct 31, 2021 at 07:14 PM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 8.0.11
 
@@ -29,11 +29,12 @@ USE `social_message`;
 -- Table structure for table `message`
 --
 
+DROP TABLE IF EXISTS `message`;
 CREATE TABLE `message` (
   `message_id` int(11) NOT NULL,
   `sender` int(11) NOT NULL,
   `receiver` int(11) NOT NULL,
-  `message` int(11) NOT NULL,
+  `message` varchar(100) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT utc_timestamp(),
   `read_status` enum('unread','read','to_reread') NOT NULL,
   `private_status` enum('public','private') NOT NULL
@@ -45,6 +46,7 @@ CREATE TABLE `message` (
 -- Table structure for table `picture`
 --
 
+DROP TABLE IF EXISTS `picture`;
 CREATE TABLE `picture` (
   `picture_id` int(11) NOT NULL,
   `profile_id` int(11) NOT NULL,
@@ -58,6 +60,7 @@ CREATE TABLE `picture` (
 -- Table structure for table `picture_like`
 --
 
+DROP TABLE IF EXISTS `picture_like`;
 CREATE TABLE `picture_like` (
   `picture_id` int(11) NOT NULL,
   `profile_id` int(11) NOT NULL,
@@ -71,6 +74,7 @@ CREATE TABLE `picture_like` (
 -- Table structure for table `profile`
 --
 
+DROP TABLE IF EXISTS `profile`;
 CREATE TABLE `profile` (
   `profile_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
@@ -85,10 +89,12 @@ CREATE TABLE `profile` (
 -- Table structure for table `user`
 --
 
+DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `user_id` int(11) NOT NULL,
   `username` varchar(50) NOT NULL,
-  `password_hash` varchar(72) NOT NULL
+  `password_hash` varchar(72) NOT NULL,
+  `two_factor_authentication` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --

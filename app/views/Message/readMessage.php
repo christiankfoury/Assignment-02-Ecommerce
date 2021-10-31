@@ -9,7 +9,8 @@
     $profile = $profile->get($data->sender);
 
     echo "<h1>Message from $profile->first_name $profile->last_name</h1>
-          <p>$data->message</p> <br>
+          <table border=1><tr><td><p>$data->message</p></td></tr></table> </table>
+          <br>
           <a href='/Profile/inbox'>Return to inbox</a>";
 
     ?>
