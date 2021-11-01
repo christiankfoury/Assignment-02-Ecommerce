@@ -45,15 +45,6 @@ class PictureLike extends \app\core\Model
         $STMT->execute(['picture_id'=>$this->picture_id,'profile_id'=>$this->profile_id,'timestamp'=>'UTC_TIMESTAMP()','read_status'=>'unseen']); //associative array with key => value pairs
     }
 
-    // TODO
-
-    // public function update()
-    // { //update an picture record but don't hange the FK value and don't change the picture filename either....
-    //     $SQL = 'UPDATE `picture` SET `filename`=:filename WHERE picture_id = :picture_id'; //always use the PK in the where clause
-    //     $STMT = self::$_connection->prepare($SQL);
-    //     $STMT->execute(['filename' => $this->filename, 'picture_id' => $this->picture_id]); //associative array with key => value pairs
-    // }
-
     public function delete()
     {
         $SQL = 'DELETE FROM `picture_like` WHERE picture_id = :picture_id AND profile_id = :profile_id';

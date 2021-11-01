@@ -20,14 +20,6 @@ class User extends \app\core\Model{
 		return $STMT->fetch();//return the record
 	}
 
-	// public function getUser_id($username){
-	// 	$SQL = 'SELECT user_id FROM user WHERE username LIKE :username';
-	// 	$STMT = self::$_connection->prepare($SQL);
-	// 	$STMT->execute(['username'=>$username]);
-	// 	$STMT->setFetchMode(\PDO::FETCH_CLASS,'app\\models\\User');
-	// 	return $STMT->fetch();//return the record
-	// }
-
 	public function insert(){
 		$this->password_hash = password_hash($this->password, PASSWORD_DEFAULT);
 		$SQL = 'INSERT INTO user(username, password_hash) VALUES (:username,:password_hash)';
@@ -41,18 +33,6 @@ class User extends \app\core\Model{
 		$STMT = self::$_connection->prepare($SQL);
 		$STMT->execute(['password_hash' => $this->password_hash, 'user_id' => $this->user_id]);//associative array with key => value pairs
 	}
-
-/*	public function update(){//update an user record
-		$SQL = 'UPDATE `user` SET `species`=:species,`colour`=:colour WHERE user_id = :user_id';
-		$STMT = self::$_connection->prepare($SQL);
-		$STMT->execute(['species'=>$this->species,'colour'=>$this->colour,'user_id'=>$this->user_id]);//associative array with key => value pairs
-	}
-
-	public function delete($user_id){//update an user record
-		$SQL = 'DELETE FROM `user` WHERE user_id = :user_id';
-		$STMT = self::$_connection->prepare($SQL);
-		$STMT->execute(['user_id'=>$user_id]);//associative array with key => value pairs
-	}*/
 
 	public function updatetwofa() {
 		$SQL = 'UPDATE `user` SET `two_factor_authentication`=:two_factor_authentication WHERE user_id = :user_id';
