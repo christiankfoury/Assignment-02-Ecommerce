@@ -30,6 +30,7 @@ class User extends \app\core\Controller{
 		}
 	}
 
+	#[\app\filters\Login]
 	public function createtwofa() {
 		$secretkey = \app\core\TokenAuth6238::generateRandomClue();
 		$user = new \app\models\User();
@@ -45,6 +46,7 @@ class User extends \app\core\Controller{
 		$this->view('User/twofasetup', $url);
 	}
 
+	#[\app\filters\Login]
 	public function deletetwofa() {
 		$user = new \app\models\User();
 		$user->user_id = $_SESSION['user_id'];
@@ -53,6 +55,7 @@ class User extends \app\core\Controller{
 		header("Location:/Profile/settings");
 	}
 
+	#[\app\filters\Login]
 	public function makeQRCode()
 	{
 		$data = $_GET['data'];
