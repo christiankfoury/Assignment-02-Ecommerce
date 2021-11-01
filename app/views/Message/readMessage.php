@@ -6,7 +6,7 @@
 <body>
     <?php
     $profile = new \app\models\Profile();
-    $profile = $profile->get($data->sender);
+    $profile = $profile->getWithProfile($data->sender);
 
     echo "<h1>Message from $profile->first_name $profile->last_name</h1>
           <table border=1><tr><td><p>$data->message</p></td></tr></table> </table>

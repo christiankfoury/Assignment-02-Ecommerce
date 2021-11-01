@@ -11,7 +11,7 @@
     foreach ($data as $messages){
 
         $profile = new \app\models\Profile();
-        $profile = $profile->get($messages->sender);
+        $profile = $profile->getWithProfile($messages->sender);
         if($messages->read_status == "to_reread"){
             $messages->read_status = "to reread";
         }        

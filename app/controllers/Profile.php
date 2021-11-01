@@ -282,11 +282,11 @@ class Profile extends \app\core\Controller {
 	}
 
 
-	// public function makeQRCode()
-	// {
-	// 	$data = $_GET['data'];
-	// 	\QRcode::png($data);
-	// }
+	public function makeQRCode()
+	{
+		$data = $_GET['data'];
+		\QRcode::png($data);
+	}
 
 	// // #[\app\filters\Login]
 	// // public function setup2fa(){
