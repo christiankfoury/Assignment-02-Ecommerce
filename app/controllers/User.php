@@ -14,6 +14,7 @@ class User extends \app\core\Controller{
 		if (isset($_POST['action'])) {
 			if ($_POST['new_password'] == '' || $_POST['password_confirm'] == '') {
 				$this->view('User/changePassword', ['profile' => $profile, 'error' => 'The new password must not be empty']);
+				return;
 			}
 			if (password_verify($_POST['current_password'], $user->password_hash) && $_POST['new_password'] == $_POST['password_confirm']) { 
 				$user->password = $_POST['new_password'];

@@ -4,6 +4,7 @@
     <title>Send a message</title>
 </head>
 <body>
+    <h2>Send a message</h2>
     <form action='' method='post'>
 	Message: <input type='text' name='message' value=''/><br>
     Privacy: <select name='private_status'>
